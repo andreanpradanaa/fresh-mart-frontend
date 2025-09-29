@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeaf, faSearch, faUser, faHeart, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { theme } from '../../styles/theme';
@@ -39,7 +40,7 @@ const HeaderContent = styled.div`
   }
 `;
 
-const Logo = styled.a`
+const Logo = styled.div`
   display: flex;
   align-items: center;
   gap: 0.625rem;
@@ -49,6 +50,7 @@ const Logo = styled.a`
   text-decoration: none;
   transition: ${theme.transitions.normal};
   position: relative;
+  cursor: pointer;
 
   &:hover {
     transform: scale(1.05);
@@ -195,6 +197,7 @@ const MobileMenuButton = styled.button`
 `;
 
 const Header = () => {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [cartCount, setCartCount] = useState(3);
@@ -209,6 +212,10 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
     console.log('Searching for:', searchQuery);
@@ -219,7 +226,7 @@ const Header = () => {
     <HeaderContainer className={isScrolled ? 'scrolled' : ''}>
       <Container>
         <HeaderContent>
-          <Logo href="#">
+          <Logo onClick={handleLogoClick}>
             <FontAwesomeIcon icon={faLeaf} />
             FreshMart
           </Logo>

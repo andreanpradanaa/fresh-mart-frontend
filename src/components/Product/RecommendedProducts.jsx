@@ -249,7 +249,7 @@ const RecommendedProducts = ({
         <SectionHeader>
           <SectionTitle>{title}</SectionTitle>
           {showViewAll && (
-            <ViewAllLink href="#products" onClick={handleViewAll}>
+            <ViewAllLink href="products" onClick={handleViewAll}>
               Lihat Semua
               <FontAwesomeIcon icon={faArrowRight} />
             </ViewAllLink>

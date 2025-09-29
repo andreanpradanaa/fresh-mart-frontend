@@ -4,11 +4,9 @@ import styled from 'styled-components';
 import { theme } from '../styles/theme';
 import ProductDetail from '../components/Product/ProductDetail';
 import RecommendedProducts from '../components/Product/RecommendedProducts';
-import ProductDetailHeader from '../components/Header/ProductDetailHeader';
 
 const PageContainer = styled.div`
   min-height: 100vh;
-  background: ${theme.colors.white};
 `;
 
 const LoadingContainer = styled.div`
@@ -86,6 +84,7 @@ const sampleProducts = [
   {
     id: 1,
     name: 'Apel Merah Segar',
+    category: 'Buah-buahan',
     price: 25000,
     originalPrice: 30000,
     rating: 4.5,
@@ -97,6 +96,7 @@ const sampleProducts = [
   {
     id: 2,
     name: 'Brokoli Organik',
+    category: 'Sayuran',
     price: 15000,
     originalPrice: null,
     rating: 4.8,
@@ -108,6 +108,7 @@ const sampleProducts = [
   {
     id: 3,
     name: 'Jeruk Manis Import',
+    category: 'Buah-buahan',
     price: 35000,
     originalPrice: 40000,
     rating: 4.3,
@@ -119,6 +120,7 @@ const sampleProducts = [
   {
     id: 4,
     name: 'Wortel Lokal Segar',
+    category: 'Sayuran',
     price: 12000,
     originalPrice: 15000,
     rating: 4.6,
@@ -130,6 +132,7 @@ const sampleProducts = [
   {
     id: 5,
     name: 'Tomat Ceri Premium',
+    category: 'Sayuran',
     price: 28000,
     originalPrice: null,
     rating: 4.7,
@@ -141,6 +144,7 @@ const sampleProducts = [
   {
     id: 6,
     name: 'Bayam Hijau Segar',
+    category: 'Sayuran',
     price: 8000,
     originalPrice: 10000,
     rating: 4.4,
@@ -152,6 +156,7 @@ const sampleProducts = [
   {
     id: 7,
     name: 'Anggur Ungu Manis',
+    category: 'Buah-buahan',
     price: 45000,
     originalPrice: 50000,
     rating: 4.9,
@@ -163,6 +168,7 @@ const sampleProducts = [
   {
     id: 8,
     name: 'Pisang Cavendish',
+    category: 'Buah-buahan',
     price: 18000,
     originalPrice: null,
     rating: 4.2,
@@ -211,7 +217,7 @@ const ProductDetailPage = ({ onAddToCart, onWishlist }) => {
   }, [id]);
 
   const handleBack = () => {
-    navigate(-1); // Go back to previous page
+    navigate('/products'); // Navigate to products page
   };
 
   const handleAddToCart = async (productWithQuantity) => {
@@ -250,13 +256,6 @@ const ProductDetailPage = ({ onAddToCart, onWishlist }) => {
   if (loading) {
     return (
       <PageContainer>
-        <ProductDetailHeader 
-          cartItems={[]} 
-          wishlistItems={[]} 
-          searchQuery="" 
-          onSearch={() => {}}
-          product={null}
-        />
         <LoadingContainer>
           <LoadingSpinner />
           <LoadingText>Memuat detail produk...</LoadingText>
@@ -268,13 +267,6 @@ const ProductDetailPage = ({ onAddToCart, onWishlist }) => {
   if (error || !product) {
     return (
       <PageContainer>
-        <ProductDetailHeader 
-          cartItems={[]} 
-          wishlistItems={[]} 
-          searchQuery="" 
-          onSearch={() => {}}
-          product={null}
-        />
         <ErrorContainer>
           <ErrorTitle>Oops! Terjadi Kesalahan</ErrorTitle>
           <ErrorMessage>
@@ -284,20 +276,21 @@ const ProductDetailPage = ({ onAddToCart, onWishlist }) => {
             Kembali
           </BackButton>
         </ErrorContainer>
+        
+        <RecommendedProducts
+          products={sampleProducts}
+          currentProductId={null}
+          onAddToCart={handleAddToCart}
+          onWishlist={handleWishlist}
+          onProductClick={handleProductClick}
+          onViewAll={handleViewAllProducts}
+        />
       </PageContainer>
     );
   }
 
   return (
     <PageContainer>
-      <ProductDetailHeader 
-        cartItems={[]} 
-        wishlistItems={[]} 
-        searchQuery="" 
-        onSearch={() => {}}
-        product={product}
-      />
-      
       <ProductDetail
         product={product}
         onBack={handleBack}

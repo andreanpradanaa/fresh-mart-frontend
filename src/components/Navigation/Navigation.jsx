@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faAppleAlt, faWineBottle, faUtensils, faTshirt, faMobileAlt, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faAppleAlt, faWineBottle, faUtensils, faTshirt, faMobileAlt, faBars, faTimes, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
 import { theme } from '../../styles/theme';
 import { Section } from '../../styles/GlobalStyles';
 
@@ -60,7 +61,7 @@ const NavItem = styled.li`
   }
 `;
 
-const NavLink = styled.a`
+const NavLink = styled(Link)`
   text-decoration: none;
   color: ${theme.colors.grayDark};
   font-weight: ${theme.typography.fontWeight.semibold};
@@ -141,25 +142,38 @@ const MobileMenuButton = styled.button`
 `;
 
 const navItems = [
-  { id: 'home', label: 'Beranda', icon: faHome, href: '#home' },
-  { id: 'fruits', label: 'Buah & Sayur', icon: faAppleAlt, href: '#fruits' },
-  { id: 'drinks', label: 'Minuman', icon: faWineBottle, href: '#drinks' },
-  { id: 'food', label: 'Makanan', icon: faUtensils, href: '#food' },
-  { id: 'clothing', label: 'Pakaian', icon: faTshirt, href: '#clothing' },
-  { id: 'electronics', label: 'Elektronik', icon: faMobileAlt, href: '#electronics' },
+  { id: 'home', label: 'Beranda', icon: faHome, to: '/' },
+  { id: 'products', label: 'Semua Produk', icon: faShoppingBag, to: '/products' },
+  { id: 'fruits', label: 'Buah & Sayur', icon: faAppleAlt, to: '/products?category=fruits' },
+  { id: 'vegetables', label: 'Sayuran', icon: faAppleAlt, to: '/products?category=vegetables' },
+  { id: 'drinks', label: 'Minuman', icon: faWineBottle, to: '/products?category=drinks' },
+  { id: 'food', label: 'Makanan', icon: faUtensils, to: '/products?category=food' },
 ];
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState('home');
+  const location = useLocation();
 
-  const handleNavClick = (itemId) => {
-    setActiveItem(itemId);
+  const handleNavClick = () => {
     setIsMenuOpen(false);
   };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const isActiveLink = (item) => {
+    if (item.id === 'home') {
+      return location.pathname === '/';
+    }
+    if (item.id === 'products') {
+      return location.pathname === '/products' && !location.search;
+    }
+    if (item.to.includes('?category=')) {
+      const category = item.to.split('category=')[1];
+      return location.pathname === '/products' && location.search.includes(`category=${category}`);
+    }
+    return false;
   };
 
   return (
@@ -174,12 +188,9 @@ const Navigation = () => {
           {navItems.map((item) => (
             <NavItem key={item.id}>
               <NavLink
-                href={item.href}
-                className={activeItem === item.id ? 'active' : ''}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(item.id);
-                }}
+                to={item.to}
+                className={isActiveLink(item) ? 'active' : ''}
+                onClick={handleNavClick}
               >
                 <FontAwesomeIcon icon={item.icon} />
                 {item.label}

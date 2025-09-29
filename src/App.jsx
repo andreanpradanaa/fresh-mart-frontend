@@ -11,6 +11,8 @@ import FeaturedSection from './components/Sections/FeaturedSection';
 import NewsletterSection from './components/Sections/NewsletterSection';
 import Footer from './components/Footer/Footer';
 import ProductDetailPage from './pages/ProductDetailPage';
+import AllProductsPage from './pages/AllProductsPage';
+
 import { theme } from './styles/theme';
 
 const AppContainer = styled.div`
@@ -97,17 +99,44 @@ function App() {
             } 
           />
           <Route 
-            path="/product/:id" 
+            path="/products" 
             element={
               <>
-                <ProductDetailPage
-                  onAddToCart={addToCart}
-                  onWishlist={addToWishlist}
+                <Header 
+                  cartItems={cartItems}
+                  wishlistCount={wishlistItems.length}
+                  onSearch={handleSearch}
                 />
+                <MainContent>
+                  <AllProductsPage
+                    onAddToCart={addToCart}
+                    onWishlist={addToWishlist}
+                  />
+                </MainContent>
                 <Footer />
               </>
             } 
           />
+          <Route 
+            path="/product/:id" 
+            element={
+              <>
+                <Header 
+                  cartItems={cartItems}
+                  wishlistCount={wishlistItems.length}
+                  onSearch={handleSearch}
+                />
+                <MainContent>
+                  <ProductDetailPage
+                    onAddToCart={addToCart}
+                    onWishlist={addToWishlist}
+                  />
+                </MainContent>
+                <Footer />
+              </>
+            } 
+          />
+
         </Routes>
       </AppContainer>
     </Router>

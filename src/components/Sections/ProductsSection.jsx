@@ -161,7 +161,7 @@ const ProductsSection = () => {
       <Container>
         <SectionTitle>
           <h2>Produk Unggulan</h2>
-          <ViewAllLink href="#products" onClick={handleViewAll}>
+          <ViewAllLink href="products" onClick={handleViewAll}>
             Lihat Semua
             <FontAwesomeIcon icon={faArrowRight} />
           </ViewAllLink>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faStar, 
@@ -8,10 +9,11 @@ import {
   faHeart, 
   faMinus, 
   faPlus,
-  faArrowLeft,
   faShare,
   faShieldAlt,
-  faTruck
+  faTruck,
+  faHome,
+  faChevronRight
 } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { theme } from '../../styles/theme';
@@ -23,23 +25,32 @@ const DetailContainer = styled.div`
   min-height: 100vh;
 `;
 
-const BackButton = styled.button`
+const BreadcrumbContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: none;
-  border: none;
-  color: ${theme.colors.primary};
-  font-size: 1rem;
-  cursor: pointer;
-  margin-bottom: 30px;
-  padding: 10px 0;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 12px 0;
+  font-size: 0.9rem;
+`;
+
+const BreadcrumbItem = styled.span`
+  color: ${props => props.$isActive ? theme.colors.black : theme.colors.grayDark};
+  font-weight: ${props => props.$isActive ? theme.typography.fontWeight.semibold : theme.typography.fontWeight.normal};
+  cursor: ${props => props.$isClickable ? 'pointer' : 'default'};
   transition: ${theme.transitions.normal};
+  display: flex;
+  align-items: center;
+  gap: 6px;
 
   &:hover {
-    color: ${theme.colors.primaryDark};
-    transform: translateX(-5px);
+    color: ${props => props.$isClickable ? theme.colors.primary : 'inherit'};
   }
+`;
+
+const BreadcrumbSeparator = styled(FontAwesomeIcon)`
+  color: ${theme.colors.gray};
+  font-size: 0.7rem;
 `;
 
 const ProductDetailGrid = styled.div`
@@ -388,6 +399,7 @@ const renderStars = (rating) => {
 };
 
 const ProductDetail = ({ product, onBack, onAddToCart, onWishlist }) => {
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -431,10 +443,30 @@ const ProductDetail = ({ product, onBack, onAddToCart, onWishlist }) => {
   return (
     <DetailContainer>
       <Container>
-        <BackButton onClick={onBack}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-          Kembali ke Produk
-        </BackButton>
+        <BreadcrumbContainer>
+          <BreadcrumbItem 
+            $isClickable={true} 
+            onClick={() => navigate('/')}
+          >
+            <FontAwesomeIcon icon={faHome} />
+            Home
+          </BreadcrumbItem>
+          
+          <BreadcrumbSeparator icon={faChevronRight} />
+          
+          <BreadcrumbItem 
+            $isClickable={true} 
+            onClick={() => navigate('/products')}
+          >
+            {product?.category || 'Produk'}
+          </BreadcrumbItem>
+          
+          <BreadcrumbSeparator icon={faChevronRight} />
+          
+          <BreadcrumbItem $isActive={true}>
+            {product?.name || 'Detail Produk'}
+          </BreadcrumbItem>
+        </BreadcrumbContainer>
 
         <ProductDetailGrid>
           <ImageSection>
