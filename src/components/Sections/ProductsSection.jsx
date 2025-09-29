@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
@@ -118,6 +119,7 @@ const FilterButton = styled.button`
 `;
 
 const ProductsSection = () => {
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState('all');
   const [cartItems, setCartItems] = useState([]);
 
@@ -146,7 +148,7 @@ const ProductsSection = () => {
 
   const handleProductClick = (product) => {
     console.log('Product clicked:', product.name);
-    // Implement product detail navigation
+    navigate(`/product/${product.id}`);
   };
 
   const handleViewAll = () => {

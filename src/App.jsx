@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import { GlobalStyles } from './styles/GlobalStyles';
 import Header from './components/Header/Header';
@@ -9,6 +10,7 @@ import ProductsSection from './components/Sections/ProductsSection';
 import FeaturedSection from './components/Sections/FeaturedSection';
 import NewsletterSection from './components/Sections/NewsletterSection';
 import Footer from './components/Footer/Footer';
+import ProductDetailPage from './pages/ProductDetailPage';
 import { theme } from './styles/theme';
 
 const AppContainer = styled.div`
@@ -27,6 +29,33 @@ const MainContent = styled.main`
   align-items: center;
   box-sizing: border-box;
 `;
+
+// HomePage component
+const HomePage = ({ cartItems, wishlistItems, searchQuery, onAddToCart, onAddToWishlist, onSearch }) => (
+  <>
+    <Header 
+      cartItems={cartItems}
+      wishlistCount={wishlistItems.length}
+      onSearch={onSearch}
+    />
+    <Navigation />
+    <MainContent>
+      <div style={{ width: '100%', margin: '-25px auto' }}>
+        <Hero />
+        <CategoriesSection />
+        <FeaturedSection />
+        <ProductsSection 
+          searchQuery={searchQuery}
+          onAddToCart={onAddToCart}
+          onAddToWishlist={onAddToWishlist}
+          wishlistItems={wishlistItems}
+        />
+        <NewsletterSection />
+      </div>
+    </MainContent>
+    <Footer />
+  </>
+);
 
 function App() {
   const [cartItems, setCartItems] = useState(0);
@@ -50,30 +79,38 @@ function App() {
   };
 
   return (
-    <AppContainer>
-      <GlobalStyles />
-      <Header 
-        cartItems={cartItems}
-        wishlistCount={wishlistItems.length}
-        onSearch={handleSearch}
-      />
-      <Navigation />
-      <MainContent>
-        <div style={{ width: '100%', margin: '-25px auto' }}>
-          <Hero />
-          <CategoriesSection />
-          <FeaturedSection />
-          <ProductsSection 
-            searchQuery={searchQuery}
-            onAddToCart={addToCart}
-            onAddToWishlist={addToWishlist}
-            wishlistItems={wishlistItems}
+    <Router>
+      <AppContainer>
+        <GlobalStyles />
+        <Routes>
+          <Route 
+            path="/" 
+            element={
+              <HomePage
+                cartItems={cartItems}
+                wishlistItems={wishlistItems}
+                searchQuery={searchQuery}
+                onAddToCart={addToCart}
+                onAddToWishlist={addToWishlist}
+                onSearch={handleSearch}
+              />
+            } 
           />
-          <NewsletterSection />
-        </div>
-      </MainContent>
-      <Footer />
-    </AppContainer>
+          <Route 
+            path="/product/:id" 
+            element={
+              <>
+                <ProductDetailPage
+                  onAddToCart={addToCart}
+                  onWishlist={addToWishlist}
+                />
+                <Footer />
+              </>
+            } 
+          />
+        </Routes>
+      </AppContainer>
+    </Router>
   );
 }
 
