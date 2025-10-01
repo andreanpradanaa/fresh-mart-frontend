@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
-import ProductDetail from '../components/Product/ProductDetail';
+import UniversalProductDetail from '../components/Product/UniversalProductDetail';
 import RecommendedProducts from '../components/Product/RecommendedProducts';
+import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
+import { getProductConfig, PRODUCT_TYPES } from '../config/productConfig';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -79,12 +81,18 @@ const BackButton = styled.button`
   }
 `;
 
+const ContentWrapper = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+`;
+
 // Sample products data - in a real app, this would come from an API
 const sampleProducts = [
   {
     id: 1,
     name: 'Apel Merah Segar',
-    category: 'Buah-buahan',
+    category: 'fruits',
     price: 25000,
     originalPrice: 30000,
     rating: 4.5,
@@ -96,7 +104,7 @@ const sampleProducts = [
   {
     id: 2,
     name: 'Brokoli Organik',
-    category: 'Sayuran',
+    category: 'vegetables',
     price: 15000,
     originalPrice: null,
     rating: 4.8,
@@ -108,7 +116,7 @@ const sampleProducts = [
   {
     id: 3,
     name: 'Jeruk Manis Import',
-    category: 'Buah-buahan',
+    category: 'fruits',
     price: 35000,
     originalPrice: 40000,
     rating: 4.3,
@@ -120,7 +128,7 @@ const sampleProducts = [
   {
     id: 4,
     name: 'Wortel Lokal Segar',
-    category: 'Sayuran',
+    category: 'vegetables',
     price: 12000,
     originalPrice: 15000,
     rating: 4.6,
@@ -132,7 +140,7 @@ const sampleProducts = [
   {
     id: 5,
     name: 'Tomat Ceri Premium',
-    category: 'Sayuran',
+    category: 'vegetables',
     price: 28000,
     originalPrice: null,
     rating: 4.7,
@@ -144,7 +152,7 @@ const sampleProducts = [
   {
     id: 6,
     name: 'Bayam Hijau Segar',
-    category: 'Sayuran',
+    category: 'vegetables',
     price: 8000,
     originalPrice: 10000,
     rating: 4.4,
@@ -156,7 +164,7 @@ const sampleProducts = [
   {
     id: 7,
     name: 'Anggur Ungu Manis',
-    category: 'Buah-buahan',
+    category: 'fruits',
     price: 45000,
     originalPrice: 50000,
     rating: 4.9,
@@ -168,7 +176,7 @@ const sampleProducts = [
   {
     id: 8,
     name: 'Pisang Cavendish',
-    category: 'Buah-buahan',
+    category: 'fruits',
     price: 18000,
     originalPrice: null,
     rating: 4.2,
@@ -179,137 +187,204 @@ const sampleProducts = [
   },
 ];
 
-const ProductDetailPage = ({ onAddToCart, onWishlist }) => {
+// Nutrition data configuration
+const nutritionData = {
+  fruits: {
+    'Apel Merah Segar': {
+      'Kalori': '52 kcal', 'Karbohidrat': '14 g', 'Serat': '2.4 g', 'Vitamin C': '4.6 mg', 'Kalium': '107 mg'
+    },
+    'Jeruk Manis Import': {
+      'Kalori': '47 kcal', 'Karbohidrat': '12 g', 'Serat': '2.4 g', 'Vitamin C': '53.2 mg', 'Kalsium': '40 mg'
+    },
+    'Anggur Ungu Manis': {
+      'Kalori': '62 kcal', 'Karbohidrat': '16 g', 'Serat': '0.9 g', 'Vitamin C': '3.2 mg', 'Kalium': '191 mg'
+    },
+    'Pisang Cavendish': {
+      'Kalori': '89 kcal', 'Karbohidrat': '23 g', 'Serat': '2.6 g', 'Kalium': '358 mg', 'Vitamin B6': '0.4 mg'
+    }
+  },
+  vegetables: {
+    'Brokoli Organik': {
+      'Kalori': '34 kcal', 'Protein': '2.8 g', 'Serat': '2.6 g', 'Vitamin C': '89.2 mg', 'Vitamin K': '101.6 μg'
+    },
+    'Wortel Lokal Segar': {
+      'Kalori': '41 kcal', 'Karbohidrat': '10 g', 'Serat': '2.8 g', 'Vitamin A': '835 μg', 'Beta Karoten': '5.9 mg'
+    },
+    'Tomat Ceri Premium': {
+      'Kalori': '18 kcal', 'Karbohidrat': '3.9 g', 'Serat': '1.2 g', 'Vitamin C': '14 mg', 'Lisin': '0.1 g'
+    },
+    'Bayam Hijau Segar': {
+      'Kalori': '23 kcal', 'Protein': '2.9 g', 'Serat': '2.2 g', 'Zat Besi': '2.7 mg', 'Vitamin A': '469 μg'
+    }
+  }
+};
+
+const UniversalProductDetailPage = ({ onAddToCart, onWishlist }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [wishlistItems, setWishlistItems] = useState([]);
 
   useEffect(() => {
-    // Simulate API call to fetch product details
     const fetchProduct = async () => {
       setLoading(true);
       setError(null);
       
       try {
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 800));
         
         const productId = parseInt(id);
         const foundProduct = sampleProducts.find(p => p.id === productId);
         
-        if (!foundProduct) {
-          throw new Error('Produk tidak ditemukan');
+        if (foundProduct) {
+          setProduct(foundProduct);
+        } else {
+          setError('Produk tidak ditemukan');
         }
-        
-        setProduct(foundProduct);
       } catch (err) {
-        setError(err.message);
+        setError('Terjadi kesalahan saat memuat produk');
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchProduct();
-    }
+    fetchProduct();
   }, [id]);
 
-  const handleBack = () => {
-    navigate('/products'); // Navigate to products page
-  };
-
-  const handleAddToCart = async (productWithQuantity) => {
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      if (onAddToCart) {
-        onAddToCart(productWithQuantity);
-      }
-      
-      console.log('Added to cart:', productWithQuantity);
-      // You could show a success toast here
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      // You could show an error toast here
+  const handleAddToCart = (product) => {
+    if (onAddToCart) {
+      onAddToCart(product);
     }
   };
 
-  const handleWishlist = (product, isWishlisted) => {
+  const handleWishlist = (product) => {
+    setWishlistItems(prev => 
+      prev.includes(product.id) 
+        ? prev.filter(id => id !== product.id)
+        : [...prev, product.id]
+    );
     if (onWishlist) {
-      onWishlist(product, isWishlisted);
+      onWishlist(product);
     }
-    console.log(isWishlisted ? 'Added to wishlist:' : 'Removed from wishlist:', product.name);
   };
 
-  const handleProductClick = (clickedProduct) => {
-    // Navigate to the clicked product's detail page
-    navigate(`/product/${clickedProduct.id}`);
+  const isWishlist = product ? wishlistItems.includes(product.id) : false;
+
+  // Get product configuration
+  const productConfig = getProductConfig(product);
+  const breadcrumbs = productConfig.breadcrumbs(product || { name: 'Produk' });
+
+  // Get nutrition data
+  const getNutritionData = (product) => {
+    if (!product) return {};
+    const category = product.category === 'fruits' ? 'fruits' : 'vegetables';
+    return nutritionData[category]?.[product.name] || {};
   };
 
-  const handleViewAllProducts = () => {
-    navigate('/products');
+  // Get benefits based on product type
+  const getBenefits = (product) => {
+    if (!product) return [];
+    
+    if (product.category === 'fruits') {
+      return [
+        'Kaya akan vitamin dan mineral',
+        'Meningkatkan sistem kekebalan tubuh',
+        'Baik untuk pencernaan',
+        'Sumber antioksidan alami',
+        'Meningkatkan energi secara alami'
+      ];
+    } else if (product.category === 'vegetables') {
+      return [
+        'Kaya akan serat dan nutrisi',
+        'Mendukung kesehatan pencernaan',
+        'Sumber vitamin dan mineral alami',
+        'Baik untuk diet sehat',
+        'Meningkatkan energi secara alami'
+      ];
+    }
+    return [];
+  };
+
+  // Build component configuration
+  const componentConfig = {
+    showNutrition: productConfig.showNutrition,
+    showBenefits: productConfig.showBenefits,
+    animateEmoji: productConfig.layout === 'fruit',
+    customTheme: productConfig.theme,
+    nutritionData: getNutritionData(product),
+    benefits: getBenefits(product)
   };
 
   if (loading) {
     return (
       <PageContainer>
-        <LoadingContainer>
-          <LoadingSpinner />
-          <LoadingText>Memuat detail produk...</LoadingText>
-        </LoadingContainer>
+        <ContentWrapper>
+          <LoadingContainer>
+            <LoadingSpinner />
+            <LoadingText>Memuat detail produk...</LoadingText>
+          </LoadingContainer>
+        </ContentWrapper>
       </PageContainer>
     );
   }
 
-  if (error || !product) {
+  if (error) {
     return (
       <PageContainer>
-        <ErrorContainer>
-          <ErrorTitle>Oops! Terjadi Kesalahan</ErrorTitle>
-          <ErrorMessage>
-            {error || 'Produk yang Anda cari tidak ditemukan. Mungkin produk telah dihapus atau URL tidak valid.'}
-          </ErrorMessage>
-          <BackButton onClick={handleBack}>
-            Kembali
-          </BackButton>
-        </ErrorContainer>
-        
-        <RecommendedProducts
-          products={sampleProducts}
-          currentProductId={null}
-          onAddToCart={handleAddToCart}
-          onWishlist={handleWishlist}
-          onProductClick={handleProductClick}
-          onViewAll={handleViewAllProducts}
-        />
+        <ContentWrapper>
+          <ErrorContainer>
+            <ErrorTitle>Produk Tidak Ditemukan</ErrorTitle>
+            <ErrorMessage>{error}</ErrorMessage>
+            <BackButton onClick={() => navigate(-1)}>
+              Kembali
+            </BackButton>
+          </ErrorContainer>
+        </ContentWrapper>
+      </PageContainer>
+    );
+  }
+
+  if (!product) {
+    return (
+      <PageContainer>
+        <ContentWrapper>
+          <ErrorContainer>
+            <ErrorTitle>Produk Tidak Tersedia</ErrorTitle>
+            <ErrorMessage>Maaf, produk ini tidak tersedia saat ini.</ErrorMessage>
+            <BackButton onClick={() => navigate(-1)}>
+              Kembali
+            </BackButton>
+          </ErrorContainer>
+        </ContentWrapper>
       </PageContainer>
     );
   }
 
   return (
     <PageContainer>
-      <ProductDetail
-        product={product}
-        onBack={handleBack}
-        onAddToCart={handleAddToCart}
-        onWishlist={handleWishlist}
-      />
-      
-      <RecommendedProducts
-        products={sampleProducts}
-        currentProductId={product.id}
-        onAddToCart={handleAddToCart}
-        onWishlist={handleWishlist}
-        onProductClick={handleProductClick}
-        onViewAll={handleViewAllProducts}
-        title="Produk Rekomendasi"
-        showViewAll={true}
-      />
+      <ContentWrapper>
+        <Breadcrumb items={breadcrumbs} />
+        
+        <UniversalProductDetail
+          product={product}
+          onAddToCart={handleAddToCart}
+          onWishlist={handleWishlist}
+          isWishlist={isWishlist}
+          config={componentConfig}
+        />
+
+        <RecommendedProducts 
+          currentProductId={product.id}
+          category={product.category}
+          onProductClick={(productId) => navigate(`/product/${productId}`)}
+          onAddToCart={handleAddToCart}
+          onWishlist={handleWishlist}
+        />
+      </ContentWrapper>
     </PageContainer>
   );
 };
 
-export default ProductDetailPage;
+export default UniversalProductDetailPage;

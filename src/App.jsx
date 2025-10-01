@@ -12,6 +12,8 @@ import NewsletterSection from './components/Sections/NewsletterSection';
 import Footer from './components/Footer/Footer';
 import ProductDetailPage from './pages/ProductDetailPage';
 import AllProductsPage from './pages/AllProductsPage';
+import CategoryPage from './pages/CategoryPage';
+
 
 import { theme } from './styles/theme';
 
@@ -136,6 +138,26 @@ function App() {
               </>
             } 
           />
+          <Route 
+            path="/category/:category" 
+            element={
+              <>
+                <Header 
+                  cartItems={cartItems}
+                  wishlistCount={wishlistItems.length}
+                  onSearch={handleSearch}
+                />
+                <MainContent>
+                  <CategoryPage
+                    onAddToCart={addToCart}
+                    onWishlist={addToWishlist}
+                  />
+                </MainContent>
+                <Footer />
+              </>
+            } 
+          />
+
 
         </Routes>
       </AppContainer>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAppleAlt, faWineBottle, faUtensils, faTshirt, faMobileAlt, faPills, faBook, faBasketballBall } from '@fortawesome/free-solid-svg-icons';
@@ -13,6 +14,7 @@ const categories = [
     title: 'Buah & Sayur',
     description: 'Buah dan sayuran segar pilihan',
     color: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+    category: 'fruits',
   },
   {
     id: 2,
@@ -66,9 +68,14 @@ const categories = [
 ];
 
 const CategoriesSection = () => {
+  const navigate = useNavigate();
+
   const handleCategoryClick = (category) => {
-    console.log('Category clicked:', category.title);
-    // Implement navigation to category page
+    if (category.category) {
+      navigate(`/category/${category.category}`);
+    } else {
+      console.log('Category clicked:', category.title);
+    }
   };
 
   return (

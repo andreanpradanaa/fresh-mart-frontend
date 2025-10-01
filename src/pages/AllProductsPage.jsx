@@ -227,10 +227,11 @@ const FilterSection = styled.div`
 
 const FilterRow = styled.div`
   display: flex;
-  flex-wrap: wrap;
   gap: 20px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
 
   @media (max-width: ${theme.breakpoints.md}) {
     flex-direction: column;
@@ -250,10 +251,10 @@ const SearchContainer = styled.div`
 
 const SearchInput = styled.input`
   width: 100%;
-  padding: 15px 50px 15px 20px;
+  padding: 18px 55px 18px 25px;
   border: 2px solid ${theme.colors.gray};
   border-radius: ${theme.borderRadius.lg};
-  font-size: 1rem;
+  font-size: 1.1rem;
   transition: ${theme.transitions.normal};
 
   &:focus {
@@ -321,7 +322,7 @@ const SortDropdown = styled.div`
 `;
 
 const SortButton = styled.button`
-  padding: 12px 20px;
+  padding: 18px 25px;
   border: 2px solid ${theme.colors.gray};
   background: ${theme.colors.white};
   color: ${theme.colors.grayDark};
@@ -331,8 +332,9 @@ const SortButton = styled.button`
   transition: ${theme.transitions.normal};
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-width: 180px;
+  gap: 10px;
+  min-width: 200px;
+  font-size: 1.1rem;
 
   &:hover {
     border-color: ${theme.colors.primary};
@@ -376,18 +378,144 @@ const ResultsHeader = styled.div`
   align-items: center;
   margin-bottom: 30px;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 20px;
+  background: ${theme.colors.white};
+  border-radius: ${theme.borderRadius.lg};
+  padding: 25px 30px;
+  box-shadow: ${theme.shadows.md};
+  border: 1px solid rgba(20, 184, 166, 0.1);
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+    padding: 20px;
+  }
+`;
+
+const ProductBanner = styled.div`
+  background: linear-gradient(135deg, ${theme.colors.primary}, #0d9488);
+  border-radius: ${theme.borderRadius.xl};
+  padding: 25px 30px;
+  margin-bottom: 30px;
+  box-shadow: ${theme.shadows.lg};
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: rotate(45deg);
+  }
+`;
+
+const BannerContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: ${theme.breakpoints.sm}) {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+`;
+
+const BannerIcon = styled.div`
+  font-size: 2.5rem;
+  animation: bounce 2s infinite;
+  
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+  }
+`;
+
+const BannerText = styled.div`
+  flex: 1;
+`;
+
+const BannerTitle = styled.h3`
+  color: ${theme.colors.white};
+  font-size: 1.4rem;
+  font-weight: ${theme.typography.fontWeight.bold};
+  margin: 0 0 5px 0;
+  
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: 1.2rem;
+  }
+`;
+
+const BannerSubtitle = styled.p`
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  margin: 0;
+  opacity: 0.9;
+  
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: 0.9rem;
+  }
+`;
+
+const BannerBadge = styled.div`
+  background: rgba(255, 255, 255, 0.2);
+  color: ${theme.colors.white};
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: ${theme.typography.fontWeight.semibold};
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
 `;
 
 const ResultsCount = styled.div`
-  font-size: 1.1rem;
-  color: ${theme.colors.grayDark};
-  font-weight: ${theme.typography.fontWeight.medium};
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, ${theme.colors.primaryLight}, #e6f7f5);
+  color: ${theme.colors.primary};
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: ${theme.typography.fontWeight.semibold};
+  margin: 0 auto 25px;
+  box-shadow: ${theme.shadows.sm};
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  
+  &::before {
+    content: '🔍';
+    font-size: 1.2rem;
+  }
+  
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    gap: 8px;
+  }
 `;
 
 const ViewToggle = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  align-items: center;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    justify-content: center;
+  }
 `;
 
 const ViewButton = styled.button`
@@ -569,20 +697,6 @@ const AllProductsPage = () => {
       );
     }
 
-    // Apply category filter
-    if (activeFilter !== 'all') {
-      if (activeFilter === 'sale') {
-        filtered = filtered.filter(product => product.originalPrice);
-      } else if (activeFilter === 'organic') {
-        filtered = filtered.filter(product => 
-          product.badge === 'Organic' || 
-          product.name.toLowerCase().includes('organik')
-        );
-      } else {
-        filtered = filtered.filter(product => product.category === activeFilter);
-      }
-    }
-
     // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
@@ -604,7 +718,7 @@ const AllProductsPage = () => {
     });
 
     return filtered;
-  }, [searchQuery, activeFilter, sortBy]);
+  }, [searchQuery, sortBy]);
 
   // Pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -615,17 +729,16 @@ const AllProductsPage = () => {
   useEffect(() => {
     const params = new URLSearchParams();
     if (searchQuery) params.set('search', searchQuery);
-    if (activeFilter !== 'all') params.set('category', activeFilter);
     if (sortBy !== 'name') params.set('sort', sortBy);
     if (currentPage !== 1) params.set('page', currentPage.toString());
     
     setSearchParams(params);
-  }, [searchQuery, activeFilter, sortBy, currentPage, setSearchParams]);
+  }, [searchQuery, sortBy, currentPage, setSearchParams]);
 
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, activeFilter, sortBy]);
+  }, [searchQuery, sortBy]);
 
   // Event handlers
   const handleSearch = (e) => {
@@ -685,33 +798,20 @@ const AllProductsPage = () => {
       </PageHeader>
 
       <Container>
-        <FilterSection>
-          <FilterRow>
-            <SearchContainer>
-              <SearchInput
-                type="text"
-                placeholder="Cari produk..."
-                value={searchQuery}
-                onChange={handleSearch}
-              />
-              <SearchIcon>
-                <FontAwesomeIcon icon={faSearch} />
-              </SearchIcon>
-            </SearchContainer>
+        <ResultsHeader>
+          <SearchContainer>
+            <SearchInput
+              type="text"
+              placeholder="Cari produk..."
+              value={searchQuery}
+              onChange={handleSearch}
+            />
+            <SearchIcon>
+              <FontAwesomeIcon icon={faSearch} />
+            </SearchIcon>
+          </SearchContainer>
 
-            <FilterGroup>
-              {filters.map((filter) => (
-                <FilterButton
-                  key={filter.id}
-                  $active={activeFilter === filter.id}
-                  onClick={() => handleFilterChange(filter.id)}
-                >
-                  {filter.icon && <span>{filter.icon}</span>}
-                  {filter.label}
-                </FilterButton>
-              ))}
-            </FilterGroup>
-
+          <ViewToggle>
             <SortDropdown>
               <SortButton onClick={() => setShowSortMenu(!showSortMenu)}>
                 <FontAwesomeIcon icon={faFilter} />
@@ -734,15 +834,7 @@ const AllProductsPage = () => {
                 </SortMenu>
               )}
             </SortDropdown>
-          </FilterRow>
-        </FilterSection>
-
-        <ResultsHeader>
-          <ResultsCount>
-            Menampilkan {paginatedProducts.length} dari {filteredProducts.length} produk
-          </ResultsCount>
-          
-          <ViewToggle>
+            
             <ViewButton
               $active={viewMode === 'grid'}
               onClick={() => setViewMode('grid')}
@@ -757,6 +849,24 @@ const AllProductsPage = () => {
             </ViewButton>
           </ViewToggle>
         </ResultsHeader>
+
+        {/* Banner Info Produk */}
+        <ProductBanner>
+          <BannerContent>
+            <BannerIcon>🌟</BannerIcon>
+            <BannerText>
+              <BannerTitle>{filteredProducts.length} Produk Segar Tersedia</BannerTitle>
+              <BannerSubtitle>{searchQuery ? `Hasil pencarian untuk "${searchQuery}"` : 'Temukan produk berkualitas tinggi untuk kebutuhan Anda'}</BannerSubtitle>
+            </BannerText>
+            <BannerBadge>
+              {filteredProducts.length > 0 ? `${Math.round((paginatedProducts.length / filteredProducts.length) * 100)}%` : '0%'} Ditampilkan
+            </BannerBadge>
+          </BannerContent>
+        </ProductBanner>
+
+        <ResultsCount>
+          Menampilkan {paginatedProducts.length} dari {filteredProducts.length} produk
+        </ResultsCount>
 
         {loading ? (
           <LoadingState>
