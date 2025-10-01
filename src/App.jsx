@@ -26,12 +26,16 @@ const AppContainer = styled.div`
 `;
 
 const MainContent = styled.main`
-  margin-top: 1.25rem; /* Tambahkan margin untuk menghindari tumpang tindih dengan header sticky */
+  padding-top: 7rem; /* Tambahkan padding untuk menghindari tumpang tindih dengan header fixed */
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding-top: 6rem; /* Kurangi padding untuk mobile */
+  }
 `;
 
 // HomePage component
@@ -42,7 +46,6 @@ const HomePage = ({ cartItems, wishlistItems, searchQuery, onAddToCart, onAddToW
       wishlistCount={wishlistItems.length}
       onSearch={onSearch}
     />
-    <Navigation />
     <MainContent>
       <div style={{ width: '100%', margin: '-25px auto' }}>
         <Hero />

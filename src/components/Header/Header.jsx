@@ -7,18 +7,21 @@ import { theme } from '../../styles/theme';
 import { Container } from '../../styles/GlobalStyles';
 
 const HeaderContainer = styled.header`
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   box-shadow: ${theme.shadows.sm};
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   padding: 15px 0;
   transition: ${theme.transitions.normal};
   border-bottom: 1px solid rgba(20, 184, 166, 0.1);
 
   &.scrolled {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     box-shadow: ${theme.shadows.md};
     border-bottom: 1px solid rgba(20, 184, 166, 0.2);
   }
