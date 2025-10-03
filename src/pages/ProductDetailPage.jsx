@@ -84,6 +84,7 @@ const sampleProducts = [
   {
     id: 1,
     name: 'Apel Merah Segar',
+    slug: 'apel-merah-segar',
     category: 'Buah-buahan',
     price: 25000,
     originalPrice: 30000,
@@ -96,6 +97,7 @@ const sampleProducts = [
   {
     id: 2,
     name: 'Brokoli Organik',
+    slug: 'brokoli-organik',
     category: 'Sayuran',
     price: 15000,
     originalPrice: null,
@@ -108,6 +110,7 @@ const sampleProducts = [
   {
     id: 3,
     name: 'Jeruk Manis Import',
+    slug: 'jeruk-manis-import',
     category: 'Buah-buahan',
     price: 35000,
     originalPrice: 40000,
@@ -120,6 +123,7 @@ const sampleProducts = [
   {
     id: 4,
     name: 'Wortel Lokal Segar',
+    slug: 'wortel-lokal-segar',
     category: 'Sayuran',
     price: 12000,
     originalPrice: 15000,
@@ -132,6 +136,7 @@ const sampleProducts = [
   {
     id: 5,
     name: 'Tomat Ceri Premium',
+    slug: 'tomat-ceri-premium',
     category: 'Sayuran',
     price: 28000,
     originalPrice: null,
@@ -144,6 +149,7 @@ const sampleProducts = [
   {
     id: 6,
     name: 'Bayam Hijau Segar',
+    slug: 'bayam-hijau-segar',
     category: 'Sayuran',
     price: 8000,
     originalPrice: 10000,
@@ -156,6 +162,7 @@ const sampleProducts = [
   {
     id: 7,
     name: 'Anggur Ungu Manis',
+    slug: 'anggur-ungu-manis',
     category: 'Buah-buahan',
     price: 45000,
     originalPrice: 50000,
@@ -168,6 +175,7 @@ const sampleProducts = [
   {
     id: 8,
     name: 'Pisang Cavendish',
+    slug: 'pisang-cavendish',
     category: 'Buah-buahan',
     price: 18000,
     originalPrice: null,
@@ -180,7 +188,7 @@ const sampleProducts = [
 ];
 
 const ProductDetailPage = ({ onAddToCart, onWishlist }) => {
-  const { id } = useParams();
+  const { slug, category } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -196,8 +204,7 @@ const ProductDetailPage = ({ onAddToCart, onWishlist }) => {
         // Simulate network delay
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        const productId = parseInt(id);
-        const foundProduct = sampleProducts.find(p => p.id === productId);
+        const foundProduct = sampleProducts.find(p => p.slug === slug);
         
         if (!foundProduct) {
           throw new Error('Produk tidak ditemukan');
@@ -211,13 +218,17 @@ const ProductDetailPage = ({ onAddToCart, onWishlist }) => {
       }
     };
 
-    if (id) {
+    if (slug) {
       fetchProduct();
     }
-  }, [id]);
+  }, [slug]);
 
   const handleBack = () => {
-    navigate('/products'); // Navigate to products page
+    if (category) {
+      navigate(`/category/${category}`); // Navigate back to category page
+    } else {
+      navigate('/products'); // Navigate to products page
+    }
   };
 
   const handleAddToCart = async (productWithQuantity) => {
@@ -245,8 +256,18 @@ const ProductDetailPage = ({ onAddToCart, onWishlist }) => {
   };
 
   const handleProductClick = (clickedProduct) => {
+    // Generate slug from product name if not available
+    const slug = clickedProduct.slug || clickedProduct.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    
     // Navigate to the clicked product's detail page
-    navigate(`/product/${clickedProduct.id}`);
+    if (category) {
+      navigate(`/category/${category}/${slug}`);
+    } else {
+      navigate(`/product/${slug}`);
+    }
   };
 
   const handleViewAllProducts = () => {

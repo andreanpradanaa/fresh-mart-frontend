@@ -148,7 +148,12 @@ const ProductsSection = () => {
 
   const handleProductClick = (product) => {
     console.log('Product clicked:', product.name);
-    navigate(`/product/${product.id}`);
+    // Generate slug from product name if not available
+    const slug = product.slug || product.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    navigate(`/product/${slug}`);
   };
 
   const handleViewAll = () => {

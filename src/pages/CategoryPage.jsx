@@ -112,6 +112,7 @@ const allProducts = [
   {
     id: 1,
     name: 'Apel Merah Segar',
+    slug: 'apel-merah-segar',
     price: 25000,
     originalPrice: 30000,
     rating: 4.5,
@@ -124,6 +125,7 @@ const allProducts = [
   {
     id: 2,
     name: 'Brokoli Organik',
+    slug: 'brokoli-organik',
     price: 15000,
     originalPrice: null,
     rating: 4.8,
@@ -134,32 +136,35 @@ const allProducts = [
     description: 'Brokoli organik segar tanpa pestisida.',
   },
   {
-    id: 3,
-    name: 'Jeruk Manis Import',
-    price: 35000,
-    originalPrice: 40000,
-    rating: 4.3,
-    reviews: 76,
-    emoji: '🍊',
-    badge: 'New',
-    category: 'fruits',
-    description: 'Jeruk manis import dengan kualitas premium.',
-  },
+      id: 3,
+      name: 'Jeruk Manis Import',
+      slug: 'jeruk-manis-import',
+      price: 35000,
+      originalPrice: 40000,
+      rating: 4.3,
+      reviews: 76,
+      emoji: '🍊',
+      badge: 'New',
+      category: 'fruits',
+      description: 'Jeruk manis import dengan kualitas premium.',
+    },
   {
-    id: 4,
-    name: 'Wortel Lokal Segar',
-    price: 12000,
-    originalPrice: 15000,
-    rating: 4.6,
-    reviews: 203,
-    emoji: '🥕',
-    badge: 'Sale',
-    category: 'vegetables',
-    description: 'Wortel lokal segar dengan nutrisi tinggi.',
-  },
+      id: 4,
+      name: 'Daging Sapi Premium',
+      slug: 'daging-sapi-premium',
+      price: 95000,
+      originalPrice: 120000,
+      rating: 4.9,
+      reviews: 342,
+      emoji: '🥩',
+      badge: 'Best Seller',
+      category: 'meat',
+      description: 'Daging sapi premium dengan kualitas terbaik.',
+    },
   {
     id: 5,
     name: 'Tomat Ceri Premium',
+    slug: 'tomat-ceri-premium',
     price: 28000,
     originalPrice: null,
     rating: 4.7,
@@ -172,6 +177,7 @@ const allProducts = [
   {
     id: 6,
     name: 'Bayam Hijau Segar',
+    slug: 'bayam-hijau-segar',
     price: 8000,
     originalPrice: 10000,
     rating: 4.4,
@@ -1238,8 +1244,13 @@ const CategoryPage = ({ onAddToCart, onWishlist }) => {
   };
 
   const handleProductClick = (product) => {
-    navigate(`/product/${product.id}`);
-  };
+  // Generate slug from product name if not available
+  const slug = product.slug || product.name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  navigate(`/category/${category}/${slug}`);
+};
 
   const getCurrentSortLabel = () => {
     const option = sortOptions.find(opt => opt.id === sortBy);

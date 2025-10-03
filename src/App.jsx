@@ -123,7 +123,7 @@ function App() {
             } 
           />
           <Route 
-            path="/product/:id" 
+            path="/product/:slug" 
             element={
               <>
                 <Header 
@@ -152,6 +152,25 @@ function App() {
                 />
                 <MainContent>
                   <CategoryPage
+                    onAddToCart={addToCart}
+                    onWishlist={addToWishlist}
+                  />
+                </MainContent>
+                <Footer />
+              </>
+            } 
+          />
+          <Route 
+            path="/category/:category/:slug" 
+            element={
+              <>
+                <Header 
+                  cartItems={cartItems}
+                  wishlistCount={wishlistItems.length}
+                  onSearch={handleSearch}
+                />
+                <MainContent>
+                  <ProductDetailPage
                     onAddToCart={addToCart}
                     onWishlist={addToWishlist}
                   />
