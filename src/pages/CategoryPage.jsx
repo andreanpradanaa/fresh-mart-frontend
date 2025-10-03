@@ -1237,6 +1237,10 @@ const CategoryPage = ({ onAddToCart, onWishlist }) => {
     setCurrentPage(1);
   };
 
+  const handleProductClick = (product) => {
+    navigate(`/product/${product.id}`);
+  };
+
   const getCurrentSortLabel = () => {
     const option = sortOptions.find(opt => opt.id === sortBy);
     return option ? option.label : 'Urutkan';
@@ -1420,6 +1424,7 @@ const CategoryPage = ({ onAddToCart, onWishlist }) => {
                     viewMode={viewMode}
                     onAddToCart={onAddToCart}
                     onWishlist={onWishlist}
+                    onProductClick={handleProductClick}
                   />
                 ))}
               </ProductGrid>
